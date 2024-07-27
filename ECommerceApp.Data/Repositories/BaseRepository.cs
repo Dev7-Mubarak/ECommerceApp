@@ -14,11 +14,11 @@ namespace ECommerceApp.Data.Repositories
 
         public async Task<T> AddAsync(T entity)
         {
-            _context.Add(entity);
+            await _context.AddAsync(entity);
             return entity;
         }
 
-        public T Delete(int id)
+        public T DeleteAsync(int id)
         {
             var entity = _context.Set<T>().Find(id);
             _context.Remove(entity);
@@ -35,7 +35,7 @@ namespace ECommerceApp.Data.Repositories
             return await _context.Set<T>().FindAsync(id);
         }
 
-        public T Update( T entity)
+        public T UpdateAsync(T entity)
         {
 
             _context.Set<T>().Update(entity);

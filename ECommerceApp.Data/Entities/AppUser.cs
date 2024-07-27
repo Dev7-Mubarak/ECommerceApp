@@ -6,7 +6,7 @@ namespace ECommerceApp.Data.Entities
     {
         public byte Age { get; set; }
         public bool Gender { get; set; }
-        public string ImageUrl { get; set; }
+        public string? ImageUrl { get; set; }
 
         public ICollection<Address> Addresses { get; set; } = new List<Address>();
 

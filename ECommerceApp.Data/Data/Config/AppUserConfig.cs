@@ -1,11 +1,6 @@
 ﻿using ECommerceApp.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ECommerceApp.Data.Data.Config
 {
@@ -14,6 +9,9 @@ namespace ECommerceApp.Data.Data.Config
         public void Configure(EntityTypeBuilder<AppUser> builder)
         {
             builder.HasKey(x => x.Id);
+
+            builder.Property(x => x.ImageUrl)
+                .IsRequired(false);
 
             builder.HasMany(x => x.Addresses)
                 .WithOne(x => x.User)

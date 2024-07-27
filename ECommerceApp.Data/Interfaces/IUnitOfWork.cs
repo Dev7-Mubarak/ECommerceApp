@@ -2,9 +2,10 @@
 
 namespace ECommerceApp.Data.Interfaces
 {
-    public interface IUnitOfWork : IDisposable
+    public interface IUnitOfWork : IAsyncDisposable
     {
         IBaseRepository<Product> Products { get; }
-        int Complete();
+        IBaseRepository<Order> Orders { get; }
+        Task<int> CompleteAsync();
     }
 }

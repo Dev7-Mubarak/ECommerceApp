@@ -19,7 +19,7 @@ public class ProductService : IProductService
     {
         var product =  _mapper.Map<Product>(productDto);
         await _unitOfWork.Products.AddAsync(product);
-        _unitOfWork.Complete();
+        await _unitOfWork.CompleteAsync();
 
         return product;
         
@@ -29,8 +29,8 @@ public class ProductService : IProductService
 
     public Product Delete(int id)
     {
-        var product = _unitOfWork.Products.Delete(id);
-        _unitOfWork.Complete();
+        var product = _unitOfWork.Products.DeleteAsync(id);
+        _unitOfWork.CompleteAsync();
 
         return product;
 
@@ -54,7 +54,7 @@ public class ProductService : IProductService
     {
        
         var product = _mapper.Map<Product>(productDto);
-        _unitOfWork.Products.Update(product);
+        _unitOfWork.Products.UpdateAsync(product);
         return product;
     }
 
