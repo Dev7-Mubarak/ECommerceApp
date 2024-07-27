@@ -1,0 +1,25 @@
+﻿using ECommerceApp.Data.Enums;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace ECommerceApp.Data.Entities
+{
+    public class Order
+    {
+        public int Id { get; set; }
+        public Status OrderStatus { get; set; }
+        public DateTime OrderedDate { get; set; }
+        public decimal TotalAmount { get; set; }
+        public int? PaymentId { get; set; }
+        public Payment? Payment { get; set; }
+        //public int ShippingAddressId { get; set; }
+       // public Address ShippingAddress { get; set; }
+        public string UserID { get; set; }
+        public AppUser User { get; set; }   
+        public ICollection<OrderItem> OrderItems { get; set; }
+    }
+
+}
+
+
+
