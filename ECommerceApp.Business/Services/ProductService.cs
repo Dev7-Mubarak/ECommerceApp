@@ -3,6 +3,8 @@ using ECommerceApp.API.DTOs;
 using ECommerceApp.Business.Interfaces;
 using ECommerceApp.Data.Entities;
 using ECommerceApp.Data.Interfaces;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 public class ProductService : IProductService
 {
@@ -18,7 +20,7 @@ public class ProductService : IProductService
     public async Task<Product> AddAsync(ProductDto productDto)
     {
         var product =  _mapper.Map<Product>(productDto);
-        await _unitOfWork.Products.AddAsync(product);
+        await _unitOfWork.Products.CreateAsync(product);
         await _unitOfWork.CompleteAsync();
 
         return product;
@@ -27,15 +29,14 @@ public class ProductService : IProductService
 
    
 
-    public Product Delete(int id)
-    {
-        var product = _unitOfWork.Products.DeleteAsync(id);
-        _unitOfWork.CompleteAsync();
+    //public async Task<Product> DeleteAsync(int id)
+    //{
+    //    var product = await _unitOfWork.Products.DeleteAsync(id);
+    //    await _unitOfWork.CompleteAsync();
 
-        return product;
+    //    return product;
 
-
-    }
+    //}
 
     public async Task<IEnumerable<Product>> GetAllAsync()
     {
@@ -54,7 +55,7 @@ public class ProductService : IProductService
     {
        
         var product = _mapper.Map<Product>(productDto);
-        _unitOfWork.Products.UpdateAsync(product);
+        _unitOfWork.Products.Update(product);
         return product;
     }
 

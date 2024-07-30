@@ -44,19 +44,19 @@ namespace ECommerceApp.API.Controllers
         }
 
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var product = await _productService.GetByIdAsync(id);
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> Delete(int id)
+        //{
+        //    var product = await _productService.GetByIdAsync(id);
 
-            if(product == null)
-            {
-                return NotFound();
-            }
+        //    if(product == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            _productService.Delete(id);
-            return Ok();
-        }
+        //    await _productService.DeleteAsync(id);
+        //    return Ok();
+        //}
 
 
         [HttpPut("Update")]

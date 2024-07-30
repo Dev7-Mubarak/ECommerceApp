@@ -19,6 +19,7 @@ namespace ECommerceApp.API.Controllers
             _orderService = orderService;
         }
 
+
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -43,44 +44,46 @@ namespace ECommerceApp.API.Controllers
         }
 
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var order = await _orderService.GetByIdAsync(id);
-
-            if(order == null)
-            {
-                return NotFound();
-            }
-
-            await _orderService.DeleteAsync(id);
-            return Ok();
-        }
-
-
-        [HttpPut]
-        public async Task<IActionResult> Update(int id, OrderDto orderDto)
-        {
-
-            var product = await _orderService.GetByIdAsync(id);
-
-            if (product == null)
-                NotFound();
-
-            await _orderService.UpdateAsync(orderDto);
-            return Ok();
-
-        }
-
-
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Create(OrderDto orderDto)
         {
-          
-            await _orderService.AddAsync(orderDto);
-            return Ok(orderDto);
+            var order = await _orderService.CreateAsync(orderDto);
+
+            if (order is null)
+                return BadRequest();
+
+            return Ok(order);
 
         }
+
+        [HttpPut]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> Update(UpdateOrderDto updateOrderDto)
+        {
+            var result = await _orderService.UpdateAsync(updateOrderDto);
+
+            if(!result)
+                return NotFound();
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var result = await _orderService.DeleteAsync(id);
+
+            if (!result)
+                return NotFound();
+
+            return NoContent();
+        }
+
     }
 
 

@@ -1,5 +1,7 @@
-﻿using ECommerceApp.Data.Interfaces;
+﻿using ECommerceApp.Data.Entities;
+using ECommerceApp.Data.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace ECommerceApp.Data.Repositories
 {
@@ -12,33 +14,38 @@ namespace ECommerceApp.Data.Repositories
             _context = context;
         }
 
-        public async Task<T> AddAsync(T entity)
+        public async Task<T> CreateAsync(T entity) 
         {
             await _context.AddAsync(entity);
             return entity;
         }
 
-        public T DeleteAsync(int id)
-        {
-            var entity = _context.Set<T>().Find(id);
-            _context.Remove(entity);
-            return entity;
-        }
+        public void Delete(T entity) => _context.Remove(entity);
 
-        public async Task<IEnumerable<T>> GetAllAsync()
+        public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, object>>[] includes = null)
         {
+            IQueryable<T> query = _context.Set<T>();
+
+            if(includes != null)
+            {
+                foreach (var include in includes)
+                {
+                    query = query.Include(include);
+                }
+                return await query.ToListAsync();
+            }
+
             return await _context.Set<T>().ToListAsync();
         }
 
-        public async Task<T> GetByIdAsync(int id)
+        public async Task<T> GetByIdAsync(int id, Expression<Func<T, object>>[] includes = null)
         {
             return await _context.Set<T>().FindAsync(id);
         }
 
-        public T UpdateAsync(T entity)
+        public T Update(T entity)
         {
-
-            _context.Set<T>().Update(entity);
+            _context.Update(entity);
             return entity;
         }
     }

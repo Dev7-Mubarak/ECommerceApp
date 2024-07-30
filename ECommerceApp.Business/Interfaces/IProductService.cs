@@ -9,6 +9,6 @@ namespace ECommerceApp.Business.Interfaces
         Task<IEnumerable<Product>> GetAllAsync();
         Product Update(ProductDto productDto);
         Task<Product> AddAsync(ProductDto productDto);
-        Product Delete(int id);
+        //Task<Product> DeleteAsync(int id);
     }
 }

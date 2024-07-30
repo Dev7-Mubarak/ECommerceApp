@@ -34,7 +34,7 @@ namespace ECommerceApp.API.Controllers
                 IdentityResult result = await _userManger.CreateAsync(user, userDto.Password);
 
                 if (result.Succeeded)
-                    return Ok("Success");
+                    return Ok();
                 else
                 {
                     foreach (var error in result.Errors)
