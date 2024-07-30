@@ -11,3 +11,5 @@ namespace ECommerceApp.Data.Interfaces
         void Delete(T entity);
     }
 }
+
+

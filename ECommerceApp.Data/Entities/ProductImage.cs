@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ECommerceApp.Data.Entities
 {
-    public class ProductImage
+    public class ProductImageDto
     {
         public int Id { get; set; }
         public string ImageURL { get; set; }

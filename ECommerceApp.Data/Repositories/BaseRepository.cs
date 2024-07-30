@@ -1,5 +1,7 @@
 ﻿using ECommerceApp.Data.Entities;
 using ECommerceApp.Data.Interfaces;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -12,10 +14,12 @@ namespace ECommerceApp.Data.Repositories
         public BaseRepository(ApplicationDbContext context)
         {
             _context = context;
+           
         }
 
         public async Task<T> CreateAsync(T entity) 
         {
+
             await _context.AddAsync(entity);
             return entity;
         }
@@ -36,11 +40,14 @@ namespace ECommerceApp.Data.Repositories
             }
 
             return await _context.Set<T>().ToListAsync();
+
+            //  return await _context.Set<T>().ToListAsync();
         }
 
         public async Task<T> GetByIdAsync(int id, Expression<Func<T, object>>[] includes = null)
         {
             return await _context.Set<T>().FindAsync(id);
+
         }
 
         public T Update(T entity)
@@ -48,5 +55,14 @@ namespace ECommerceApp.Data.Repositories
             _context.Update(entity);
             return entity;
         }
+
+       
     }
 }
+
+
+
+
+
+
+

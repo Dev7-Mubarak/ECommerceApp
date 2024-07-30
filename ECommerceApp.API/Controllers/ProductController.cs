@@ -3,7 +3,10 @@ using ECommerceApp.Business.Interfaces;
 using ECommerceApp.Business.Services;
 using ECommerceApp.Data.Entities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace ECommerceApp.API.Controllers
 {
@@ -12,7 +15,7 @@ namespace ECommerceApp.API.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly IProductService _productService;
-       
+        
         public ProductsController(IProductService productService)
         {
             _productService = productService;
@@ -43,52 +46,51 @@ namespace ECommerceApp.API.Controllers
             return Ok(product);
         }
 
-
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> Delete(int id)
-        //{
-        //    var product = await _productService.GetByIdAsync(id);
-
-        //    if(product == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    await _productService.DeleteAsync(id);
-        //    return Ok();
-        //}
-
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+          
+           var product =  await _productService.Delete(id);
+            if(product == true)
+                return Ok(id);
+           else
+                return BadRequest();
+        }
 
         [HttpPut("Update")]
-        public async Task<IActionResult> Update(int id , ProductDto productDto)
+        public async Task<IActionResult> Update(int id ,[FromForm] ProductUpdateDto updateDto)
         {
 
-            var product = _productService.GetByIdAsync(id);
+            if(ModelState.IsValid)
+            {
+                var product = await _productService.GetAllPropertiesAsync(updateDto.Id);
 
-            if (product == null)
-                NotFound();
-            _productService.Update(productDto);
-            return Ok();
+                if (product != null)
+                {
+                    _productService.Update(updateDto);
+                    return Ok(updateDto.Name + "/" + updateDto.BrandName);
+                }              
+            }
 
+            return BadRequest();
 
         }
 
-
         [HttpPost("Create")]
-        public async Task<IActionResult> Create(ProductDto productDto)
+        public async Task<IActionResult> Create( [FromForm] ProductDto productDto)
         {
-            
-            if(productDto == null)
+           
+
+            if (productDto == null)
             {
                 return NotFound();
             }
 
-           await _productService.AddAsync(productDto);
+           await _productService.AddWithIMage(productDto);
             return Ok(productDto);
 
-
-
         }
+
     }
 
 
