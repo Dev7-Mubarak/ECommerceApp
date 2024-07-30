@@ -1,5 +1,9 @@
-﻿using ECommerceApp.Data.Interfaces;
+﻿using ECommerceApp.Data.Entities;
+using ECommerceApp.Data.Interfaces;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace ECommerceApp.Data.Repositories
 {
@@ -10,36 +14,77 @@ namespace ECommerceApp.Data.Repositories
         public BaseRepository(ApplicationDbContext context)
         {
             _context = context;
+           
         }
 
-        public async Task<T> AddAsync(T entity)
+        public async Task<T> CreateAsync(T entity)
         {
+
             await _context.AddAsync(entity);
             return entity;
         }
 
-        public T DeleteAsync(int id)
+        public async void Delete(T entity)
         {
-            var entity = _context.Set<T>().Find(id);
-            _context.Remove(entity);
-            return entity;
+           
+             _context.Remove(entity);
+           
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync()
+        public async Task<IEnumerable<T>> GetAllAsync(params Expression<Func<T, object>>[] includes)
         {
+
+            IQueryable<T> query = _context.Set<T>();
+
+            if (includes != null)
+            {
+                foreach (var include in includes)
+                {
+                    query = query.Include(include);
+                }
+
+                return await query.ToListAsync();
+            }
+
+
             return await _context.Set<T>().ToListAsync();
+
+            //  return await _context.Set<T>().ToListAsync();
         }
 
-        public async Task<T> GetByIdAsync(int id)
+        public async Task<T> GetByIdAsync(int id, params Expression<Func<T, object>>[] includes)
         {
+            IQueryable<T> query = _context.Set<T>();
+
+            if (includes != null)
+            {
+                foreach (var include in includes)
+                {
+                    query = query.Include(include);
+                }
+
+                return await query.FirstOrDefaultAsync(e => EF.Property<int>(e, "Id") == id);
+              
+            }
+
             return await _context.Set<T>().FindAsync(id);
+
         }
 
-        public T UpdateAsync(T entity)
+        public  T Update(T entity)
         {
 
-            _context.Set<T>().Update(entity);
+           _context.Set<T>().Update(entity);
             return entity;
         }
+
+       
     }
 }
+
+
+
+
+
+
+

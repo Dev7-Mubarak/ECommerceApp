@@ -1,11 +1,19 @@
-﻿namespace ECommerceApp.Data.Interfaces
+﻿using Microsoft.AspNetCore.Http;
+using System.Linq.Expressions;
+
+namespace ECommerceApp.Data.Interfaces
 {
     public interface IBaseRepository<T> where T : class
     {
-        Task<IEnumerable<T>> GetAllAsync();
-        Task<T> GetByIdAsync(int id);
-        T UpdateAsync(T entity);
-        Task<T> AddAsync(T entity);
-        T DeleteAsync(int id);
+        Task<IEnumerable<T>> GetAllAsync(params Expression<Func<T, object>>[] includes);
+        Task<T> GetByIdAsync(int id, params Expression<Func<T, object>>[] includes);
+        T Update(T entity);
+        Task<T> CreateAsync(T entity);
+        void Delete(T entity);
+
+
+        
     }
 }
+
+

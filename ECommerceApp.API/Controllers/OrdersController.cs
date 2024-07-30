@@ -13,10 +13,11 @@ namespace ECommerceApp.API.Controllers
     public class OrdersController : ControllerBase
     {
         private readonly IOrderService _orderService;
-
-        public OrdersController(IOrderService orderService)
+        private readonly OrderService orderService1;
+        public OrdersController(IOrderService orderService, OrderService orderService1)
         {
             _orderService = orderService;
+            this.orderService1=orderService1;
         }
 
         [HttpGet]
@@ -46,6 +47,7 @@ namespace ECommerceApp.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
+           
             var order = await _orderService.GetByIdAsync(id);
 
             if(order == null)

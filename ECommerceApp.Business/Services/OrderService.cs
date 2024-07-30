@@ -24,13 +24,20 @@ public class OrderService : IOrderService
         return order;
     }
 
-  
-    public async Task<Order> DeleteAsync(int id)
-    {
-        var order = _unitOfWork.Orders.DeleteAsync(id);
-        await _unitOfWork.CompleteAsync();
 
-        return order;
+    public async Task<bool> DeleteAsync(int id)
+    {
+        var order = await _unitOfWork.Orders.DeleteAsync(id);
+        if(order == false)
+            return false;
+
+        else
+        {
+            await _unitOfWork.CompleteAsync();
+
+            return true;
+        }
+      
     }
 
     public async Task<IEnumerable<Order>> GetAllAsync()
@@ -40,7 +47,7 @@ public class OrderService : IOrderService
         return orders;
     }
 
-    public async Task<OrderDto> GetByIdAsync(int id)
+    public async Task<OrderDto> GetByIdAsync(int id )  
     {
         var order = await _unitOfWork.Orders.GetByIdAsync(id);
         return _mapper.Map<OrderDto>(order);
