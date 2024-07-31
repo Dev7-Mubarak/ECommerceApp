@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 
 namespace ECommerceApp.Data.Interfaces
 {
@@ -10,9 +9,6 @@ namespace ECommerceApp.Data.Interfaces
         T Update(T entity);
         Task<T> CreateAsync(T entity);
         void Delete(T entity);
-
-
-        
     }
 }
 

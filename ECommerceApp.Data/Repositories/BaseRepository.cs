@@ -17,64 +17,42 @@ namespace ECommerceApp.Data.Repositories
            
         }
 
-        public async Task<T> CreateAsync(T entity)
+        public async Task<T> CreateAsync(T entity) 
         {
 
             await _context.AddAsync(entity);
             return entity;
         }
 
-        public async void Delete(T entity)
-        {
-           
-             _context.Remove(entity);
-           
-        }
+        public void Delete(T entity) => _context.Remove(entity);
 
-        public async Task<IEnumerable<T>> GetAllAsync(params Expression<Func<T, object>>[] includes)
+        public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, object>>[] includes = null)
         {
-
             IQueryable<T> query = _context.Set<T>();
 
-            if (includes != null)
+            if(includes != null)
             {
                 foreach (var include in includes)
                 {
                     query = query.Include(include);
                 }
-
                 return await query.ToListAsync();
             }
-
 
             return await _context.Set<T>().ToListAsync();
 
             //  return await _context.Set<T>().ToListAsync();
         }
 
-        public async Task<T> GetByIdAsync(int id, params Expression<Func<T, object>>[] includes)
+        public async Task<T> GetByIdAsync(int id, Expression<Func<T, object>>[] includes = null)
         {
-            IQueryable<T> query = _context.Set<T>();
-
-            if (includes != null)
-            {
-                foreach (var include in includes)
-                {
-                    query = query.Include(include);
-                }
-
-                return await query.FirstOrDefaultAsync(e => EF.Property<int>(e, "Id") == id);
-              
-            }
-
             return await _context.Set<T>().FindAsync(id);
 
         }
 
-        public  T Update(T entity)
+        public T Update(T entity)
         {
-
-           _context.Set<T>().Update(entity);
+            _context.Update(entity);
             return entity;
         }
 

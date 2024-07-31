@@ -11,6 +11,12 @@ namespace ECommerceApp.Business.Helpers
         public MappingProfile()
         {
             CreateMap<Product, ProductDto>()
+                .ReverseMap();
+
+            CreateMap<Order, OrderDto>()
+                .ReverseMap();
+
+            CreateMap<UpdateOrderDto, Order>();
                 .ForMember(prdto => prdto.BrandName,
                 opt => opt.MapFrom(src => src.Brand.Name))
                 .ForMember(prdto => prdto.CategoryName,
