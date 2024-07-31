@@ -31,6 +31,10 @@ namespace ECommerceApp.Data.Data.Config
             builder.HasOne(x => x.Brand)
                 .WithMany(x => x.Products)
                 .HasForeignKey(x => x.BrandId);
+
+
+            builder.HasMany(x => x.OrderItems)
+                .WithOne(x => x.Product);
         }
     }
 }

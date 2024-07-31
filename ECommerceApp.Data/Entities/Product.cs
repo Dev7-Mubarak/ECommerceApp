@@ -12,6 +12,7 @@ namespace ECommerceApp.Data.Entities
         public Brand? Brand { get; set; }
         public ICollection<OrderItem>? OrderItems { get; set; }
         public ICollection<ProductImageDto>? ProductImages { get; set; }
+        public ICollection<CartItem> cartItems {  get; set; } 
     }
 }
 

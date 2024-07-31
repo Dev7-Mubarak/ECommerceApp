@@ -7,8 +7,8 @@ namespace ECommerceApp.Data.Entities
     public class Order
     {
         public int Id { get; set; }
-        public Status OrderStatus { get; set; }
-        public DateTime OrderedDate { get; set; }
+        public Status OrderStatus { get; set; } = Status.Pending;
+        public DateTime OrderedDate { get; set; } = DateTime.Now;
         public decimal TotalAmount { get; set; }
         public int? PaymentId { get; set; }
         public Payment? Payment { get; set; }

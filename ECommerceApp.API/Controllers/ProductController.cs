@@ -50,7 +50,7 @@ namespace ECommerceApp.API.Controllers
         public async Task<IActionResult> Delete(int id)
         {
           
-           var product =  await _productService.Delete(id);
+           var product =  await _productService.DeleteAsync(id);
             if(product == true)
                 return Ok(id);
            else

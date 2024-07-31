@@ -9,12 +9,14 @@ namespace ECommerceApp.Data.Repositories
         private readonly ApplicationDbContext _context;
        
         public IBaseRepository<Order> Orders { get; private set; }
+        public IBaseRepository<Product> Products { get; private set; }
 
         public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
            
             Orders = new BaseRepository<Order>(_context);
+            Products = new BaseRepository<Product>(_context);
           
         }
 

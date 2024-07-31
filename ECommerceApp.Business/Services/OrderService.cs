@@ -19,7 +19,7 @@ public class OrderService : IOrderService
     public async Task<Order> AddAsync(OrderDto orderDto)
     {
         var order =  _mapper.Map<Order>(orderDto);
-        await _unitOfWork.Orders.AddAsync(order);
+        await _unitOfWork.Orders.cr(order);
         await _unitOfWork.CompleteAsync();
         return order;
     }

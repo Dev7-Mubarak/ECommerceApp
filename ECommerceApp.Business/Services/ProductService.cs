@@ -125,7 +125,7 @@ public class ProductService : IProductService
         }
 
 
-        await _unitOfWork.Products.AddAsync(produt);
+        await _unitOfWork.Products.CreateAsync(produt);
         await _unitOfWork.CompleteAsync();
         return produt;
     }
