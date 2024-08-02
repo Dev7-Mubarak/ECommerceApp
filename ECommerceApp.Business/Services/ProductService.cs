@@ -48,7 +48,6 @@ public class ProductService : IProductService
 
         return true;
     }
-
     public async Task<IEnumerable<ProducrImageDto>> GetAllAsync()
     {
         var products = await _unitOfWork.Products.GetAllAsync(
@@ -93,7 +92,6 @@ public class ProductService : IProductService
 
         return productDto;
     }
-
     public async Task<Product> CreateAsync(ProductDto productDto)
     {
 
@@ -114,7 +112,8 @@ public class ProductService : IProductService
                     var productImage = new ProductImageDto
                     {
                         ImageURL = Path.Combine("images", file.FileName),
-                        Product = product
+                       // Product = product
+                        
                     };
 
                     product.ProductImages ??= new List<ProductImageDto>();
@@ -129,7 +128,6 @@ public class ProductService : IProductService
         await _unitOfWork.CompleteAsync();
         return produt;
     }
-
     public Task<bool> UpdateAsync(ProductUpdateDto productDto)
     {
         throw new NotImplementedException();

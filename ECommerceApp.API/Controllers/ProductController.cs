@@ -61,16 +61,16 @@ namespace ECommerceApp.API.Controllers
         public async Task<IActionResult> Update(int id ,[FromForm] ProductUpdateDto updateDto)
         {
 
-            if(ModelState.IsValid)
-            {
-                var product = await _productService.GetAllPropertiesAsync(updateDto.Id);
+            //if(ModelState.IsValid)
+            //{
+            //    var product = await _productService.GetAllPropertiesAsync(updateDto.Id);
 
-                if (product != null)
-                {
-                    _productService.Update(updateDto);
-                    return Ok(updateDto.Name + "/" + updateDto.BrandName);
-                }              
-            }
+            //    if (product != null)
+            //    {
+            //        _productService.Update(updateDto);
+            //        return Ok(updateDto.Name + "/" + updateDto.BrandName);
+            //    }              
+            //}
 
             return BadRequest();
 
@@ -86,7 +86,7 @@ namespace ECommerceApp.API.Controllers
                 return NotFound();
             }
 
-           await _productService.AddWithIMage(productDto);
+           await _productService.CreateAsync(productDto);
             return Ok(productDto);
 
         }

@@ -19,26 +19,38 @@ public class OrderService : IOrderService
     public async Task<Order> AddAsync(OrderDto orderDto)
     {
         var order =  _mapper.Map<Order>(orderDto);
-        await _unitOfWork.Orders.cr(order);
+        await _unitOfWork.Orders.CreateAsync(order);
         await _unitOfWork.CompleteAsync();
         return order;
     }
 
-
-    public async Task<bool> DeleteAsync(int id)
+    public Task<Order> CreateAsync(OrderDto productDto)
     {
-        var order = await _unitOfWork.Orders.DeleteAsync(id);
-        if(order == false)
-            return false;
-
-        else
-        {
-            await _unitOfWork.CompleteAsync();
-
-            return true;
-        }
-      
+        throw new NotImplementedException();
     }
+
+    public Task<bool> DeleteAsync(int id)
+    {
+        throw new NotImplementedException();
+    }
+
+    //public async Task<bool> DeleteAsync(int id)
+    //{
+    //    var order = await _unitOfWork.Orders.GetByIdAsync(id);
+
+    //    var reslut =  _unitOfWork.Orders.Delete(order);
+
+    //    if(reslut == false)
+    //        return false;
+
+    //    else
+    //    {
+    //        await _unitOfWork.CompleteAsync();
+
+    //        return true;
+    //    }
+
+    //}
 
     public async Task<IEnumerable<Order>> GetAllAsync()
     {
@@ -57,12 +69,20 @@ public class OrderService : IOrderService
     {
        
         var order = _mapper.Map<Order>(orderDto);
-         _unitOfWork.Orders.UpdateAsync(order);
+         _unitOfWork.Orders.Update(order);
         await _unitOfWork.CompleteAsync();
         return order;
     }
 
-  
+    public Task<bool> UpdateAsync(UpdateOrderDto updateOrderDto)
+    {
+        throw new NotImplementedException();
+    }
+
+    Task<IEnumerable<OrderDto>> IOrderService.GetAllAsync()
+    {
+        throw new NotImplementedException();
+    }
 }
 
 

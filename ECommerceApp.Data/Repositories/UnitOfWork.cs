@@ -7,9 +7,11 @@ namespace ECommerceApp.Data.Repositories
     public class UnitOfWork : IUnitOfWork
     {
         private readonly ApplicationDbContext _context;
-       
+        public IBaseRepository<Basket> Basksets { get; private set; }
         public IBaseRepository<Order> Orders { get; private set; }
         public IBaseRepository<Product> Products { get; private set; }
+
+      
 
         public UnitOfWork(ApplicationDbContext context)
         {
@@ -17,6 +19,7 @@ namespace ECommerceApp.Data.Repositories
            
             Orders = new BaseRepository<Order>(_context);
             Products = new BaseRepository<Product>(_context);
+            Basksets = new BaseRepository<Basket>(_context);
           
         }
 

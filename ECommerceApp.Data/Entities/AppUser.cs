@@ -13,5 +13,7 @@ namespace ECommerceApp.Data.Entities
         public ICollection<Order> Orders { get; set; } = new List<Order> ();
 
         public Payment Payment { get; set; }
+
+        public Basket shoppingCart { get; set; }
     }
 }

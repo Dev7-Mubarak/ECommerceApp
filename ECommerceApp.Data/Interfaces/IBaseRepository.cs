@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using ECommerceApp.Data.Entities;
+using System.Linq.Expressions;
 
 namespace ECommerceApp.Data.Interfaces
 {
@@ -9,6 +10,7 @@ namespace ECommerceApp.Data.Interfaces
         T Update(T entity);
         Task<T> CreateAsync(T entity);
         void Delete(T entity);
+      
     }
 }
 
