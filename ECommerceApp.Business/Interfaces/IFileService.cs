@@ -10,8 +10,6 @@ namespace ECommerceApp.Data.Interfaces
     public interface IFileService
     {
         Task<string> SaveFileAsync(IFormFile file, string FolderPath);
-
         Task<string> DeleteFileAsync(string URL, string FolderPath);
-
     }
 }

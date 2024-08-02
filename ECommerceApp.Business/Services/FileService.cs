@@ -1,14 +1,6 @@
-﻿using AutoMapper;
-using ECommerceApp.API.DTOs;
-using ECommerceApp.Data.Entities;
-using ECommerceApp.Data.Interfaces;
+﻿using ECommerceApp.Data.Interfaces;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ECommerceApp.Data.Repositories
 {

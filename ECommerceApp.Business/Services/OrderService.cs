@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using ECommerceApp.Business.DTOs;
+using ECommerceApp.Business.DTOs.Order;
 using ECommerceApp.Business.Interfaces;
 using ECommerceApp.Data.Entities;
 using ECommerceApp.Data.Interfaces;
@@ -9,14 +9,12 @@ public class OrderService : IOrderService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
-    private readonly ILogger _logger;
 
-    public OrderService(IMapper mapper, IUnitOfWork unitOfWork, ILogger logger)
+    public OrderService(IMapper mapper, IUnitOfWork unitOfWork)
     {
         _mapper = mapper;
         _unitOfWork = unitOfWork;
-        _logger = logger;
-    }
+   }
 
     public async Task<Order> CreateAsync(OrderDto orderDto)
     {

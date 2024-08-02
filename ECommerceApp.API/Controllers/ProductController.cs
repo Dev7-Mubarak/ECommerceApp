@@ -1,12 +1,6 @@
-﻿using ECommerceApp.API.DTOs;
+﻿using ECommerceApp.Business.DTOs.Product;
 using ECommerceApp.Business.Interfaces;
-using ECommerceApp.Business.Services;
-using ECommerceApp.Data.Entities;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace ECommerceApp.API.Controllers
 {
@@ -49,8 +43,7 @@ namespace ECommerceApp.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-          
-           var product =  await _productService.Delete(id);
+           var product =  await _productService.DeleteAsync(id);
             if(product == true)
                 return Ok(id);
            else
@@ -63,11 +56,11 @@ namespace ECommerceApp.API.Controllers
 
             if(ModelState.IsValid)
             {
-                var product = await _productService.GetAllPropertiesAsync(updateDto.Id);
+                var product = await _productService.UpdateAsync(updateDto);
 
                 if (product != null)
                 {
-                    _productService.Update(updateDto);
+                    await _productService.UpdateAsync(updateDto);
                     return Ok(updateDto.Name + "/" + updateDto.BrandName);
                 }              
             }
@@ -77,18 +70,16 @@ namespace ECommerceApp.API.Controllers
         }
 
         [HttpPost("Create")]
-        public async Task<IActionResult> Create( [FromForm] ProductDto productDto)
+        public async Task<IActionResult> Create([FromForm] ProductCreateDto productDto)
         {
-           
 
             if (productDto == null)
             {
                 return NotFound();
             }
 
-           await _productService.AddWithIMage(productDto);
+            await _productService.CreateAsync(productDto);
             return Ok(productDto);
-
         }
 
     }

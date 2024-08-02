@@ -1,4 +1,4 @@
-﻿using ECommerceApp.Business.DTOs;
+﻿using ECommerceApp.Business.DTOs.User;
 using ECommerceApp.Business.Interfaces;
 using ECommerceApp.Data.Entities;
 using Microsoft.AspNetCore.Identity;

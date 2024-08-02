@@ -1,6 +1,6 @@
 ﻿using ECommerceApp.Data.Enums;
 
-namespace ECommerceApp.Business.DTOs
+namespace ECommerceApp.Business.DTOs.Order
 {
     public class OrderDto
     {

@@ -1,4 +1,4 @@
-﻿namespace ECommerceApp.Business.DTOs
+﻿namespace ECommerceApp.Business.DTOs.User
 {
     public class RegisterDto
     {

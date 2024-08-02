@@ -1,9 +1,5 @@
-﻿using ECommerceApp.API.DTOs;
-using ECommerceApp.Business.DTOs;
+﻿using ECommerceApp.Business.DTOs.Order;
 using ECommerceApp.Business.Interfaces;
-using ECommerceApp.Business.Services;
-using ECommerceApp.Data.Entities;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerceApp.API.Controllers

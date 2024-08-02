@@ -17,5 +17,5 @@ public class ApplicationDbContext : IdentityDbContext<AppUser>
     public DbSet<Payment> Payments { get; set; }
     public DbSet<Address> addresses { get; set; }
     public DbSet<Brand> Brands { get; set; }
-    public DbSet<ProductImageDto> ProductImages { get; set; }
+    public DbSet<ProductImage> ProductImages { get; set; }
 }

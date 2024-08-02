@@ -1,31 +1,30 @@
 ﻿using AutoMapper;
-using ECommerceApp.API.DTOs;
+using ECommerceApp.Business.DTOs.Product;
 using ECommerceApp.Business.DTOs;
+using ECommerceApp.Business.Helpers;
 using ECommerceApp.Business.Interfaces;
 using ECommerceApp.Data.Entities;
 using ECommerceApp.Data.Interfaces;
-using ECommerceApp.Data.Repositories;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 
 public class ProductService : IProductService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
     private readonly IFileService _fileService;
-    private readonly IWebHostEnvironment _env;
+    private readonly IWebHostEnvironment _webHostEnvironment;
 
-    public ProductService(IMapper mapper, IUnitOfWork unitOfWork, IFileService fileService, IWebHostEnvironment env)
+    public ProductService(IMapper mapper, IUnitOfWork unitOfWork, IFileService fileService, IWebHostEnvironment webHostEnvironment)
     {
         _mapper = mapper;
         _unitOfWork = unitOfWork;
-        _fileService=fileService;
-        _env=env;
+        _fileService = fileService;
+        _webHostEnvironment = webHostEnvironment;
     }
 
     public async Task<bool> DeleteAsync(int productId)
     {
+
        // var product = await _unitOfWork.Products.GetByIdAsync(productId);
         var product = await _unitOfWork.Products.GetByIdAsync(productId, p => p.ProductImages);
 
@@ -49,7 +48,7 @@ public class ProductService : IProductService
         return true;
     }
 
-    public async Task<IEnumerable<ProducrImageDto>> GetAllAsync()
+    public async Task<IEnumerable<ProductReturnDto>> GetAllAsync()
     {
         var products = await _unitOfWork.Products.GetAllAsync(
             p => p.Category,
@@ -57,21 +56,21 @@ public class ProductService : IProductService
             p => p.ProductImages
         );
 
-        var productDtos = _mapper.Map<IEnumerable<ProducrImageDto>>(products);
+        var productDtos = _mapper.Map<IEnumerable<ProductReturnDto>>(products);
 
         foreach (var productDto in productDtos)
         {
             var product = products.FirstOrDefault(p => p.Id == productDto.Id);
             if (product != null && product.ProductImages != null && product.ProductImages.Any())
             {
-                var imageUrls = product.ProductImages.Select(img => Path.Combine(_env.WebRootPath, img.ImageURL)).ToList();
+                var imageUrls = product.ProductImages.Select(img => Path.Combine(_webHostEnvironment.WebRootPath, img.ImageURL)).ToList();
                 productDto.ImageUrls = imageUrls;
             }
         }
 
         return productDtos;
     }
-    public async Task<ProducrImageDto> GetByIdAsync(int id)
+    public async Task<ProductReturnDto> GetByIdAsync(int id)
     {
         var product = await _unitOfWork.Products.GetByIdAsync(
             id,
@@ -83,51 +82,44 @@ public class ProductService : IProductService
         if(product == null)
             return null;
 
-        var productDto = _mapper.Map<ProducrImageDto>(product);
+        var productDto = _mapper.Map<ProductReturnDto>(product);
 
         if (product.ProductImages != null && product.ProductImages.Any())
         {
-            var imageUrls = product.ProductImages.Select(img => Path.Combine(_env.WebRootPath, img.ImageURL)).ToList();
+            var imageUrls = product.ProductImages.Select(img => Path.Combine(_webHostEnvironment.WebRootPath, img.ImageURL)).ToList();
             productDto.ImageUrls = imageUrls;
         }
 
         return productDto;
     }
 
-    public async Task<Product> CreateAsync(ProductDto productDto)
+    public async Task<ProductReturnDto?> CreateAsync(ProductCreateDto productCreateDto)
     {
 
-        var produt = _mapper.Map<Product>(productDto);
+        var product = _mapper.Map<Product>(productCreateDto);
 
-        if (productDto.Images != null && produt is Product product)
+        if (productCreateDto.Images != null)
         {
-            foreach (var file in productDto.Images)
+            product.ProductImages = new List<ProductImage>();
+
+            foreach (var image in productCreateDto.Images)
             {
-                if (file.Length > 0)
+
+                var ImageURL = await Utilities.SaveFileAsync(image, _webHostEnvironment + FileSetings.ImagesPath);
+
+                var productImage = new ProductImage
                 {
-                    var filePath = Path.Combine(_env.WebRootPath, "Images", file.FileName);
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await file.CopyToAsync(stream);
-                    }
-
-                    var productImage = new ProductImageDto
-                    {
-                        ImageURL = Path.Combine("images", file.FileName),
-                        Product = product
-                    };
-
-                    product.ProductImages ??= new List<ProductImageDto>();
-                    product.ProductImages.Add(productImage);
-
-                }
+                    ImageURL = ImageURL,
+                    Product = product,
+                };
+                product.ProductImages.Add(productImage);
             }
         }
 
+        await _unitOfWork.Products.CreateAsync(product);
+        int result = await _unitOfWork.CompleteAsync();
 
-        await _unitOfWork.Products.AddAsync(produt);
-        await _unitOfWork.CompleteAsync();
-        return produt;
+        return result > 0? _mapper.Map<ProductReturnDto>(product): null;
     }
 
     public Task<bool> UpdateAsync(ProductUpdateDto productDto)

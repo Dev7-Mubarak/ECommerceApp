@@ -1,5 +1,4 @@
-﻿using ECommerceApp.API.DTOs;
-using ECommerceApp.Business.DTOs;
+﻿using ECommerceApp.Business.DTOs.Order;
 using ECommerceApp.Data.Entities;
 
 namespace ECommerceApp.Business.Interfaces
