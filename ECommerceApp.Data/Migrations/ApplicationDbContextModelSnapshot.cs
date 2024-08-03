@@ -149,6 +149,38 @@ namespace ECommerceApp.Data.Migrations
                     b.ToTable("Brands");
                 });
 
+            modelBuilder.Entity("ECommerceApp.Data.Entities.CartItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("ProdutId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ShoppingCartId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("productId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ShoppingCartId");
+
+                    b.HasIndex("productId");
+
+                    b.ToTable("CartItems");
+                });
+
             modelBuilder.Entity("ECommerceApp.Data.Entities.Category", b =>
                 {
                     b.Property<int>("Id")
@@ -282,7 +314,7 @@ namespace ECommerceApp.Data.Migrations
                     b.Property<int?>("BrandId")
                         .HasColumnType("int");
 
-                    b.Property<int>("CategoryId")
+                    b.Property<int?>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
@@ -295,7 +327,7 @@ namespace ECommerceApp.Data.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("QuantityInStock")
+                    b.Property<int?>("QuantityInStock")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -307,7 +339,7 @@ namespace ECommerceApp.Data.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("ECommerceApp.Data.Entities.ProductImage", b =>
+            modelBuilder.Entity("ECommerceApp.Data.Entities.ProductImageDto", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -327,6 +359,26 @@ namespace ECommerceApp.Data.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("ProductImages");
+                });
+
+            modelBuilder.Entity("ECommerceApp.Data.Entities.ShoppingCart", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasFilter("[UserId] IS NOT NULL");
+
+                    b.ToTable("Basket");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -473,6 +525,25 @@ namespace ECommerceApp.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("ECommerceApp.Data.Entities.CartItem", b =>
+                {
+                    b.HasOne("ECommerceApp.Data.Entities.ShoppingCart", "cart")
+                        .WithMany("catItems")
+                        .HasForeignKey("ShoppingCartId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ECommerceApp.Data.Entities.Product", "product")
+                        .WithMany("cartItems")
+                        .HasForeignKey("productId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("cart");
+
+                    b.Navigation("product");
+                });
+
             modelBuilder.Entity("ECommerceApp.Data.Entities.Order", b =>
                 {
                     b.HasOne("ECommerceApp.Data.Entities.Payment", "Payment")
@@ -528,16 +599,14 @@ namespace ECommerceApp.Data.Migrations
 
                     b.HasOne("ECommerceApp.Data.Entities.Category", "Category")
                         .WithMany("Products")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CategoryId");
 
                     b.Navigation("Brand");
 
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("ECommerceApp.Data.Entities.ProductImage", b =>
+            modelBuilder.Entity("ECommerceApp.Data.Entities.ProductImageDto", b =>
                 {
                     b.HasOne("ECommerceApp.Data.Entities.Product", "Product")
                         .WithMany("ProductImages")
@@ -546,6 +615,15 @@ namespace ECommerceApp.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("ECommerceApp.Data.Entities.ShoppingCart", b =>
+                {
+                    b.HasOne("ECommerceApp.Data.Entities.AppUser", "user")
+                        .WithOne("shoppingCart")
+                        .HasForeignKey("ECommerceApp.Data.Entities.ShoppingCart", "UserId");
+
+                    b.Navigation("user");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -607,6 +685,9 @@ namespace ECommerceApp.Data.Migrations
 
                     b.Navigation("Payment")
                         .IsRequired();
+
+                    b.Navigation("shoppingCart")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("ECommerceApp.Data.Entities.Brand", b =>
@@ -635,6 +716,13 @@ namespace ECommerceApp.Data.Migrations
                     b.Navigation("OrderItems");
 
                     b.Navigation("ProductImages");
+
+                    b.Navigation("cartItems");
+                });
+
+            modelBuilder.Entity("ECommerceApp.Data.Entities.ShoppingCart", b =>
+                {
+                    b.Navigation("catItems");
                 });
 #pragma warning restore 612, 618
         }

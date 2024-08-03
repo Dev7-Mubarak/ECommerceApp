@@ -3,7 +3,6 @@ using ECommerceApp.Business.DTOs.Order;
 using ECommerceApp.Business.Interfaces;
 using ECommerceApp.Data.Entities;
 using ECommerceApp.Data.Interfaces;
-using Microsoft.Build.Framework;
 
 public class OrderService : IOrderService
 {
@@ -16,20 +15,47 @@ public class OrderService : IOrderService
         _unitOfWork = unitOfWork;
    }
 
-    public async Task<Order> CreateAsync(OrderDto orderDto)
+    public async Task<Order> AddAsync(OrderDto orderDto)
     {
         var order =  _mapper.Map<Order>(orderDto);
         await _unitOfWork.Orders.CreateAsync(order);
-
-        int result = await _unitOfWork.CompleteAsync();
-
-        return result > 0? order : null;
+        await _unitOfWork.CompleteAsync();
+        return order;
     }
-  
-    public async Task<IEnumerable<OrderDto>> GetAllAsync()
+
+    public Task<Order> CreateAsync(OrderDto productDto)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<bool> DeleteAsync(int id)
+    {
+        throw new NotImplementedException();
+    }
+
+    //public async Task<bool> DeleteAsync(int id)
+    //{
+    //    var order = await _unitOfWork.Orders.GetByIdAsync(id);
+
+    //    var reslut =  _unitOfWork.Orders.Delete(order);
+
+    //    if(reslut == false)
+    //        return false;
+
+    //    else
+    //    {
+    //        await _unitOfWork.CompleteAsync();
+
+    //        return true;
+    //    }
+
+    //}
+
+    public async Task<IEnumerable<Order>> GetAllAsync()
     {
         var orders = await _unitOfWork.Orders.GetAllAsync();
-        return _mapper.Map<IEnumerable<OrderDto>>(orders);
+    
+        return orders;
     }
 
     public async Task<OrderDto> GetByIdAsync(int id )  
@@ -38,32 +64,24 @@ public class OrderService : IOrderService
         return _mapper.Map<OrderDto>(order);
     }
 
-    public async Task<bool> UpdateAsync(UpdateOrderDto updateOrderDto)
+    public async Task<Order> UpdateAsync(OrderDto orderDto)
     {
-        var order = await _unitOfWork.Orders.GetByIdAsync(updateOrderDto.id);
-
-        if (order == null)
-            return false;
-
-        _mapper.Map(updateOrderDto, order);
-
-        _unitOfWork.Orders.Update(order);
-        int result = await _unitOfWork.CompleteAsync();
-        return result > 0? true : false;
+       
+        var order = _mapper.Map<Order>(orderDto);
+         _unitOfWork.Orders.Update(order);
+        await _unitOfWork.CompleteAsync();
+        return order;
     }
 
-    public async Task<bool> DeleteAsync(int id)
+    public Task<bool> UpdateAsync(UpdateOrderDto updateOrderDto)
     {
-        var order = await _unitOfWork.Orders.GetByIdAsync(id);
-
-        if (order == null)
-            return false;
-
-        _unitOfWork.Orders.Delete(order);
-        int result = await _unitOfWork.CompleteAsync();
-        return result > 0 ? true : false;
+        throw new NotImplementedException();
     }
 
+    Task<IEnumerable<OrderDto>> IOrderService.GetAllAsync()
+    {
+        throw new NotImplementedException();
+    }
 }
 
 

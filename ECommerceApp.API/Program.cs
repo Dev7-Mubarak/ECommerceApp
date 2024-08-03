@@ -16,6 +16,8 @@ builder.Services.AddControllers();
 
 builder.Services.AddTransient<IFileService, FileService>();
 
+builder.Services.AddScoped<IBasketService, BasketService>();
+
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
