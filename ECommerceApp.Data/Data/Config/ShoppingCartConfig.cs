@@ -8,20 +8,16 @@ public class ShoppingCartConfig : IEntityTypeConfiguration<Basket>
     {
         builder.HasKey(x => x.Id);
 
-       
 
         builder.HasOne(x => x.user)
-                .WithOne(x => x.shoppingCart)
+                .WithOne(x => x.Basket)
                 .HasForeignKey<Basket>(e => e.UserId)
                 .IsRequired(false);
 
 
-
-        builder.HasMany(x => x.catItems)
-            .WithOne(x => x.cart)
-            .HasForeignKey(x => x.ShoppingCartId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-       
+        //builder.HasMany(x => x.BasketItems)
+        //    .WithOne(x => x.Basket)
+        //    .HasForeignKey(x => x.BasketId)
+        //    .OnDelete(DeleteBehavior.Cascade);
     }
 }

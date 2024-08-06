@@ -5,13 +5,6 @@ using ECommerceApp.Data.Entities;
 using ECommerceApp.Data.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ECommerceApp.Business.Services
 {
@@ -24,10 +17,10 @@ namespace ECommerceApp.Business.Services
 
         public BasketService(IMapper mapper, IUnitOfWork unitOfWork, UserManager<AppUser> userManager, IHttpContextAccessor httpContextAccessor)
         {
-            _mapper=mapper;
-            _unitOfWork=unitOfWork;
-            _userManager=userManager;
-            _httpContextAccessor=httpContextAccessor;
+            _mapper = mapper;
+            _unitOfWork = unitOfWork;
+            _userManager = userManager;
+            _httpContextAccessor = httpContextAccessor;
         }
         public Task<Basket> Delete()
         {
@@ -72,22 +65,19 @@ namespace ECommerceApp.Business.Services
                     throw new Exception($"Product with ID {itemDto.ProductId} not found");
                 }
 
-              
-                    var basketItem = new BasketItem
-                    {
-                        Id = itemDto.Id,
-                        ProdutId = product.Id,
-                        Quantity = itemDto.Quantity,
-                        Price = itemDto.PricePerUnit,
-                        product = product,
-                        cart = basket
-                    };
-
+               var basketItem = new BasketItem
+               {
+                   ProdutId = product.Id,
+                   Quantity = itemDto.Quantity,
+                   Price = itemDto.PricePerUnit,
+                   Product = product,
+                   Basket = basket
+               };
               
             }
 
             // _unitOfWork.Basksets.Attach(basket);
-            await _unitOfWork.Basksets.CreateAsync(basket);
+            await _unitOfWork.Baskets.CreateAsync(basket);
             await _unitOfWork.CompleteAsync();
 
             return basket;

@@ -40,6 +40,37 @@ namespace ECommerceApp.API.Controllers
             return Ok(product);
         }
 
+
+        [HttpPost("Create")]
+        public async Task<IActionResult> Create([FromForm] ProductCreateDto productCreateDto)
+        {
+            if (productCreateDto == null)
+            {
+                return NotFound();
+            }
+
+            var product = await _productService.CreateAsync(productCreateDto);
+            return Ok(product);
+        }
+
+        [HttpPut("Update")]
+        public async Task<IActionResult> Update(int id, [FromForm] ProductUpdateDto updateDto)
+        {
+
+            if (ModelState.IsValid)
+            {
+                var product = await _productService.UpdateAsync(updateDto);
+
+                if (product != null)
+                {
+                    await _productService.UpdateAsync(updateDto);
+                    return Ok(updateDto.Name + "/" + updateDto.BrandName);
+                }
+            }
+
+            return BadRequest();
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -50,37 +81,6 @@ namespace ECommerceApp.API.Controllers
                 return BadRequest();
         }
 
-        [HttpPut("Update")]
-        public async Task<IActionResult> Update(int id ,[FromForm] ProductUpdateDto updateDto)
-        {
-
-            if(ModelState.IsValid)
-            {
-                var product = await _productService.UpdateAsync(updateDto);
-
-                if (product != null)
-                {
-                    await _productService.UpdateAsync(updateDto);
-                    return Ok(updateDto.Name + "/" + updateDto.BrandName);
-                }              
-            }
-
-            return BadRequest();
-
-        }
-
-        [HttpPost("Create")]
-        public async Task<IActionResult> Create([FromForm] ProductCreateDto productDto)
-        {
-
-            if (productDto == null)
-            {
-                return NotFound();
-            }
-
-            await _productService.CreateAsync(productDto);
-            return Ok(productDto);
-        }
 
     }
 

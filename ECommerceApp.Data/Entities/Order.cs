@@ -4,9 +4,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ECommerceApp.Data.Entities
 {
-    public class Order
+    public class Order : BaseEntity
     {
-        public int Id { get; set; }
         public Status OrderStatus { get; set; } = Status.Pending;
         public DateTime OrderedDate { get; set; } = DateTime.Now;
         public decimal TotalAmount { get; set; }

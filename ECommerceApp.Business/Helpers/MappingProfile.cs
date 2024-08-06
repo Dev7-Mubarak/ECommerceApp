@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ECommerceApp.Business.DTOs;
 using ECommerceApp.Business.DTOs.Order;
 using ECommerceApp.Business.DTOs.Product;
 using ECommerceApp.Data.Entities;
@@ -9,12 +10,18 @@ namespace ECommerceApp.Business.Helpers
     {
         public MappingProfile()
         {
-            //CreateMap<Product, ProductDto>()
-            //    .ReverseMap();
 
-            CreateMap<ProductReturnDto, Product>();
+            CreateMap<Product, ProductReturnDto>()
+                 .ForMember(poductReturnDto => poductReturnDto.ImageUrls,
+                 opt => opt.MapFrom(product => product.ProductImages.Select(x => x.ImageURL)));
+
+            CreateMap<ProductCreateDto, Product>()
+                .ReverseMap();
 
             CreateMap<Order, OrderDto>()
+                .ReverseMap();
+
+            CreateMap<Basket, BasketDto>()
                 .ReverseMap();
 
             CreateMap<UpdateOrderDto, Order>();

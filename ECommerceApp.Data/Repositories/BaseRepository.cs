@@ -7,7 +7,7 @@ using System.Linq.Expressions;
 
 namespace ECommerceApp.Data.Repositories
 {
-    public class BaseRepository<T> : IBaseRepository<T> where T : class
+    public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
     {
         private readonly ApplicationDbContext _context;
 
@@ -24,30 +24,26 @@ namespace ECommerceApp.Data.Repositories
             return entity;
         }
 
+
+        public async Task<T> GetByIdAsync(int id, params Expression<Func<T, object>>[] includes)
+        {
+            IQueryable<T> query = _context.Set<T>();
+
+            if (includes != null)
+                query = includes.Aggregate(query, (current, include) => current.Include(include));
+
+            return await query.FirstOrDefaultAsync(x => x.Id == id);
+        }
         public void Delete(T entity) => _context.Remove(entity);
 
         public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, object>>[] includes = null)
         {
             IQueryable<T> query = _context.Set<T>();
 
-            if(includes != null)
-            {
-                foreach (var include in includes)
-                {
-                    query = query.Include(include);
-                }
-                return await query.ToListAsync();
-            }
+            if (includes != null)
+                query = includes.Aggregate(query, (current, include) => current.Include(include));
 
-            return await _context.Set<T>().ToListAsync();
-
-            //  return await _context.Set<T>().ToListAsync();
-        }
-
-        public async Task<T> GetByIdAsync(int id, Expression<Func<T, object>>[] includes = null)
-        {
-            return await _context.Set<T>().FindAsync(id);
-
+            return await query.ToListAsync();
         }
 
         public T Update(T entity)

@@ -1,51 +1,60 @@
 ﻿using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ECommerceApp.Business.Helpers
 {
     public static class Utilities
     {
-        public static bool CreateFolderIfDoesNotExist(string FolderPath)
+        public static void CreateFolderIfDoesNotExist(string FolderPath)
         {
             if (!Directory.Exists(FolderPath))
             {
                 try
                 {
                     Directory.CreateDirectory(FolderPath);
-                    return true;
                 }
                 catch (Exception ex)
                 {
-                    return false;
+                    throw new Exception();
                 }
             }
 
-            return true;
-
         }
-        public static async Task<string> SaveFileAsync(IFormFile sourseFile, string destination)
+        private static string ReplaceFileNameWithGUID(IFormFile file)
         {
-            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(sourseFile.FileName)}";
-
-            var path = Path.Combine(destination, fileName);
-
-            using var Stream = File.Create(path);
-
-            await sourseFile.CopyToAsync(Stream);
-
-            return fileName;
+            string extension = Path.GetExtension(file.FileName);
+            return Guid.NewGuid() + extension;
         }
-        public static bool DeleteFile(string URL, string FolderPath)
+        // return Tuple
+        public static async Task<(bool isSuccess, string FileName)> SaveFileAsync(IFormFile file, string destination)
+        {
+
+            CreateFolderIfDoesNotExist(destination);
+
+            try
+            {
+                var newFileName = ReplaceFileNameWithGUID(file);
+
+                var newFilPath = Path.Combine(destination, newFileName);
+
+                using (var Stream = new FileStream(newFilPath, FileMode.Create))
+                {
+                    await file.CopyToAsync(Stream);
+                }
+
+                return (true, newFileName);
+            }
+            catch (Exception ex)
+            {
+                return (false, string.Empty);
+            }
+        }
+        public static bool DeleteFile(string file, string destination)
         {
             try
             {
-                var cover = Path.Combine(URL, FolderPath);
-                File.Delete(cover);
+                var FilePath = Path.Combine(destination, file);
 
+                File.Delete(FilePath);
                 return true;
             }
             catch (Exception ex)
