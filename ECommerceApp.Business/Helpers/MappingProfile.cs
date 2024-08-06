@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ECommerceApp.Business.DTOs;
 using ECommerceApp.Business.DTOs.Order;
 using ECommerceApp.Business.DTOs.Product;
 using ECommerceApp.Data.Entities;
@@ -12,9 +13,17 @@ namespace ECommerceApp.Business.Helpers
             //CreateMap<Product, ProductDto>()
             //    .ReverseMap();
 
-            CreateMap<ProductReturnDto, Product>();
+            CreateMap<ProductReturnDto, Product>()
+                .ReverseMap();
+            CreateMap<ProductCreateDto, Product>()
+                .ReverseMap();
 
             CreateMap<Order, OrderDto>()
+                .ReverseMap();
+
+
+
+            CreateMap<Basket, BasketDto>()
                 .ReverseMap();
 
             CreateMap<UpdateOrderDto, Order>();
