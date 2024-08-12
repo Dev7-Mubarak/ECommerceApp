@@ -15,13 +15,14 @@ namespace ECommerceApp.Business.Helpers
                  .ForMember(poductReturnDto => poductReturnDto.ImageUrls,
                  opt => opt.MapFrom(product => product.ProductImages.Select(x => x.ImageURL)));
 
+            CreateMap<ProductReturnDto, Product>()
+                .ReverseMap();
+            CreateMap<ProductCreateDto, Product>()
+                .ReverseMap();
             CreateMap<ProductCreateDto, Product>()
                 .ReverseMap();
 
             CreateMap<Order, OrderDto>()
-                .ReverseMap();
-
-            CreateMap<Basket, BasketDto>()
                 .ReverseMap();
 
             CreateMap<UpdateOrderDto, Order>();

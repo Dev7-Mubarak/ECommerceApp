@@ -70,8 +70,8 @@ namespace ECommerceApp.Business.Services
                    ProdutId = product.Id,
                    Quantity = itemDto.Quantity,
                    Price = itemDto.PricePerUnit,
-                   Product = product,
-                   Basket = basket
+                   product = product,
+                   cart = basket
                };
               
             }
