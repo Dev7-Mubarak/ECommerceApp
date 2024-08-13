@@ -10,8 +10,8 @@ public class ShoppingCartConfig : IEntityTypeConfiguration<Basket>
 
 
         builder.HasOne(x => x.user)
-                .WithOne(x => x.Basket)
-                .HasForeignKey<Basket>(e => e.UserId)
+                .WithMany(x => x.Basket)
+                .HasForeignKey(x => x.UserId)
                 .IsRequired(false);
 
 

@@ -11,7 +11,7 @@ namespace ECommerceApp.Data.Entities
         public decimal TotalAmount { get; set; }
         public int? PaymentId { get; set; }
         public Payment? Payment { get; set; }
-        public string UserID { get; set; }
+        public string UserId { get; set; }
         public AppUser User { get; set; }   
         public ICollection<OrderItem> OrderItems { get; set; }
     }

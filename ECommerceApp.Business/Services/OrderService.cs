@@ -3,6 +3,8 @@ using ECommerceApp.Business.DTOs.Order;
 using ECommerceApp.Business.Interfaces;
 using ECommerceApp.Data.Entities;
 using ECommerceApp.Data.Interfaces;
+using Microsoft.AspNetCore.Identity;
+using NuGet.ContentModel;
 
 public class OrderService : IOrderService
 {
@@ -14,57 +16,53 @@ public class OrderService : IOrderService
         _mapper = mapper;
         _unitOfWork = unitOfWork;
    }
-
-    public async Task<Order> AddAsync(OrderDto orderDto)
-    {
-        var order =  _mapper.Map<Order>(orderDto);
-        await _unitOfWork.Orders.CreateAsync(order);
-        await _unitOfWork.CompleteAsync();
-        return order;
-    }
-
-    public Task<Order> CreateAsync(OrderDto productDto)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<bool> DeleteAsync(int id)
-    {
-        throw new NotImplementedException();
-    }
-
-    //public async Task<bool> DeleteAsync(int id)
-    //{
-    //    var order = await _unitOfWork.Orders.GetByIdAsync(id);
-
-    //    var reslut =  _unitOfWork.Orders.Delete(order);
-
-    //    if(reslut == false)
-    //        return false;
-
-    //    else
-    //    {
-    //        await _unitOfWork.CompleteAsync();
-
-    //        return true;
-    //    }
-
-    //}
-
-    public async Task<IEnumerable<Order>> GetAllAsync()
+   
+    public async Task<IEnumerable<ReturnOrderDto>> GetAllAsync()
     {
         var orders = await _unitOfWork.Orders.GetAllAsync();
-    
-        return orders;
-    }
 
-    public async Task<OrderDto> GetByIdAsync(int id )  
+    
+        return _mapper.Map<IEnumerable<ReturnOrderDto>>(orders);
+    }
+    public async Task<ReturnOrderDto> GetByIdAsync(int id )  
     {
         var order = await _unitOfWork.Orders.GetByIdAsync(id);
-        return _mapper.Map<OrderDto>(order);
+        return _mapper.Map<ReturnOrderDto>(order);
     }
+    public async Task<CreateOrderDto> CreateAsync(CreateOrderDto orderDto)
+    {
+        // var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
+        var order = _mapper.Map<Order>(orderDto);
+        order.UserId = "d63698b9-da90-44d9-acfb-7d26d52ce901";
+        if (order != null)
+        {
+            foreach (var orderdto in orderDto.orderItemDtos)
+            {
+                var product = await _unitOfWork.Products.GetByIdAsync(orderdto.ProductId);
+                if (product == null)
+                {
+                    throw new Exception($"Product with ID {orderdto.ProductId} not found");
+                }
 
-    public async Task<Order> UpdateAsync(OrderDto orderDto)
+
+                var orderItem = new OrderItem
+                {
+                    ProductId = product.Id,
+                    Quantity = orderdto.Quantity,
+                    Price = orderdto.Price,
+                    Product = product,
+                    Order = order
+                };
+            }
+
+            await _unitOfWork.Orders.CreateAsync(order);
+            await _unitOfWork.CompleteAsync();
+            return orderDto;
+        }
+
+        return null;
+    }
+    public async Task<Order> UpdateAsync(CreateOrderDto orderDto)
     {
        
         var order = _mapper.Map<Order>(orderDto);
@@ -72,16 +70,24 @@ public class OrderService : IOrderService
         await _unitOfWork.CompleteAsync();
         return order;
     }
-
     public Task<bool> UpdateAsync(UpdateOrderDto updateOrderDto)
     {
         throw new NotImplementedException();
     }
-
-    Task<IEnumerable<OrderDto>> IOrderService.GetAllAsync()
+    public async Task<bool> DeleteAsync(int id)
     {
-        throw new NotImplementedException();
+        var order = await _unitOfWork.Orders.GetByIdAsync(id);
+        if (order != null)
+        {
+            _unitOfWork.Orders.Delete(order);
+            var rowAffected = await _unitOfWork.CompleteAsync();
+
+            return rowAffected > 0 ? true : false;
+        }
+
+        return false;
     }
+
 }
 
 

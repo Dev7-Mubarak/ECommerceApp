@@ -12,4 +12,7 @@ namespace ECommerceApp.Data.Entities
         public AppUser user { get; set; }
         public ICollection<BasketItem> BasketItems { get; set; }
     }
+
+  
+
 }

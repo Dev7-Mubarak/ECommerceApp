@@ -18,7 +18,7 @@ public class OrderConfig : IEntityTypeConfiguration<Order>
 
         builder.HasMany(x => x.OrderItems)
             .WithOne(x => x.Order)
-            .HasForeignKey(x => x.OrderID);
+            .HasForeignKey(x => x.OrderId);
 
 
         builder.HasOne(x => x.Payment)

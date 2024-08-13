@@ -21,7 +21,7 @@ namespace ECommerceApp.Data.Data.Config
 
             builder.HasMany(x => x.OrderItems)
                 .WithOne(x => x.Product)
-                .HasForeignKey(x => x.ProductID);
+                .HasForeignKey(x => x.ProductId);
 
 
             builder.HasMany(x => x.ProductImages)

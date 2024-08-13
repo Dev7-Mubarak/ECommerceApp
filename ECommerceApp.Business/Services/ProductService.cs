@@ -21,8 +21,6 @@ public class ProductService : IProductService
         _imagePath = _webHost.WebRootPath + FileSetings.ImagesPath;
     }
 
-
-    // Check the code
     public async Task<IEnumerable<ProductReturnDto>> GetAllAsync()
     {
         var products = await _unitOfWork.Products
@@ -60,7 +58,6 @@ public class ProductService : IProductService
 
         return productDto;
     }
-
     public async Task<ProductReturnDto?> CreateAsync(ProductCreateDto productCreateDto)
     {
 
@@ -95,7 +92,6 @@ public class ProductService : IProductService
 
         return rowAffected > 0 ? _mapper.Map<ProductReturnDto>(product) : null;
     }
-
     public async Task<bool> UpdateAsync(ProductUpdateDto productDto)
     {
         var product = await _unitOfWork.Products.GetByIdAsync(productDto.Id, p => p.ProductImages);
@@ -107,7 +103,6 @@ public class ProductService : IProductService
 
         return true;
     }
-
     public async Task<bool> DeleteAsync(int productId)
     {
         var product = await _unitOfWork.Products.GetByIdAsync(productId, p => p.ProductImages);
@@ -130,6 +125,8 @@ public class ProductService : IProductService
 
         return rowAffected > 0 ? true : false;
     }
+
+  
 }
 
 

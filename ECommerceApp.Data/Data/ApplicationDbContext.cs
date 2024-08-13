@@ -18,8 +18,8 @@ public class ApplicationDbContext : IdentityDbContext<AppUser>
     public DbSet<Address> addresses { get; set; }
     public DbSet<Brand> Brands { get; set; }
     public DbSet<ProductImage> ProductImages { get; set; }
-    public DbSet<Basket> Basket {  get; set; }
-    public DbSet<BasketItem> CartItems { get; set; }
+    public DbSet<Basket> Baskets {  get; set; }
+    public DbSet<BasketItem> BasketItems { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder builder)

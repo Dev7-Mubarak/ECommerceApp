@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ECommerceApp.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240812160306_initla-2")]
+    partial class initla2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -140,7 +143,8 @@ namespace ECommerceApp.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("Baskets");
                 });
@@ -240,7 +244,7 @@ namespace ECommerceApp.Data.Migrations
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("UserId")
+                    b.Property<string>("UserID")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
@@ -250,7 +254,7 @@ namespace ECommerceApp.Data.Migrations
                         .IsUnique()
                         .HasFilter("[PaymentId] IS NOT NULL");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserID");
 
                     b.ToTable("Orders");
                 });
@@ -266,23 +270,23 @@ namespace ECommerceApp.Data.Migrations
                     b.Property<decimal?>("Discount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("OrderId")
+                    b.Property<int>("OrderID")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("ProductId")
+                    b.Property<int>("ProductID")
                         .HasColumnType("int");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("decimal(18,2)");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("OrderId");
+                    b.HasIndex("OrderID");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("ProductID");
 
                     b.ToTable("OrderItems");
                 });
@@ -524,8 +528,8 @@ namespace ECommerceApp.Data.Migrations
             modelBuilder.Entity("ECommerceApp.Data.Entities.Basket", b =>
                 {
                     b.HasOne("ECommerceApp.Data.Entities.AppUser", "user")
-                        .WithMany("Basket")
-                        .HasForeignKey("UserId")
+                        .WithOne("Basket")
+                        .HasForeignKey("ECommerceApp.Data.Entities.Basket", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -541,7 +545,7 @@ namespace ECommerceApp.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("ECommerceApp.Data.Entities.Product", "Product")
-                        .WithMany("BasketItems")
+                        .WithMany("cartItems")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -559,7 +563,7 @@ namespace ECommerceApp.Data.Migrations
 
                     b.HasOne("ECommerceApp.Data.Entities.AppUser", "User")
                         .WithMany("Orders")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -572,13 +576,13 @@ namespace ECommerceApp.Data.Migrations
                 {
                     b.HasOne("ECommerceApp.Data.Entities.Order", "Order")
                         .WithMany("OrderItems")
-                        .HasForeignKey("OrderId")
+                        .HasForeignKey("OrderID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("ECommerceApp.Data.Entities.Product", "Product")
                         .WithMany("OrderItems")
-                        .HasForeignKey("ProductId")
+                        .HasForeignKey("ProductID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -679,7 +683,8 @@ namespace ECommerceApp.Data.Migrations
                 {
                     b.Navigation("Addresses");
 
-                    b.Navigation("Basket");
+                    b.Navigation("Basket")
+                        .IsRequired();
 
                     b.Navigation("Orders");
 
@@ -715,11 +720,11 @@ namespace ECommerceApp.Data.Migrations
 
             modelBuilder.Entity("ECommerceApp.Data.Entities.Product", b =>
                 {
-                    b.Navigation("BasketItems");
-
                     b.Navigation("OrderItems");
 
                     b.Navigation("ProductImages");
+
+                    b.Navigation("cartItems");
                 });
 #pragma warning restore 612, 618
         }

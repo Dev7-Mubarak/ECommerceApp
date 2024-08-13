@@ -9,10 +9,9 @@ namespace ECommerceApp.Data.Entities
         public string UserId { get; set; }
         public AppUser User { get; set; }
         public decimal Amount { get; set; }
-        public DateTime PaymentDate { get; set; }
-        public PaymentMethod PaymentMethod { get; set; }
-        public Status Status { get; set; }
-
+        public DateTime PaymentDate { get; set; } = DateTime.Now;
+        public PaymentMethod PaymentMethod { get; set; } = PaymentMethod.PayPal;
+        public Status Status { get; set; } = Status.Pending;
         public Order Order { get; set; }
     }
 }

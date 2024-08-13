@@ -20,7 +20,7 @@ namespace ECommerceApp.Data.Data.Config
 
             builder.HasMany(x => x.Orders)
                .WithOne(x => x.User)
-               .HasForeignKey(x => x.UserID);
+               .HasForeignKey(x => x.UserId);
 
 
             builder.HasOne(x => x.Payment)

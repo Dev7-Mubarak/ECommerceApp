@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ECommerceApp.Business.DTOs
+namespace ECommerceApp.Business.DTOs.Basket
 {
     public class BasketDto
     {
-        public List<BasketItemDto> Items { get; set; }
+        public List<BasketItemDto> BasketItems { get; set; }
     }
-
 }

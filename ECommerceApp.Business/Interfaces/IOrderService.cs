@@ -5,10 +5,10 @@ namespace ECommerceApp.Business.Interfaces
 {
     public interface IOrderService
     {
-        Task<OrderDto> GetByIdAsync(int id);
-        Task<IEnumerable<OrderDto>> GetAllAsync();
+        Task<IEnumerable<ReturnOrderDto>> GetAllAsync();
+        Task<ReturnOrderDto> GetByIdAsync(int id);
+        Task<CreateOrderDto> CreateAsync(CreateOrderDto productDto);
         Task<bool> UpdateAsync(UpdateOrderDto updateOrderDto);
-        Task<Order> CreateAsync(OrderDto productDto);
         Task<bool> DeleteAsync(int id);
     }
 }

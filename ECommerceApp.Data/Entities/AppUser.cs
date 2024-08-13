@@ -14,6 +14,6 @@ namespace ECommerceApp.Data.Entities
 
         public Payment Payment { get; set; }
 
-        public Basket Basket { get; set; }
+        public ICollection <Basket> Basket { get; set; }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using ECommerceApp.Business.DTOs;
+using ECommerceApp.Business.DTOs.Basket;
 using ECommerceApp.Business.DTOs.Order;
 using ECommerceApp.Business.DTOs.Product;
 using ECommerceApp.Data.Entities;
@@ -22,7 +22,7 @@ namespace ECommerceApp.Business.Helpers
             CreateMap<ProductCreateDto, Product>()
                 .ReverseMap();
 
-            CreateMap<Order, OrderDto>()
+            CreateMap<Order, CreateOrderDto>()
                 .ReverseMap();
 
             CreateMap<UpdateOrderDto, Order>();
@@ -44,7 +44,27 @@ namespace ECommerceApp.Business.Helpers
                opt => opt.MapFrom(src => src.Category.Name))
                .ForMember(prdto => prdto.Images,
                opt => opt.MapFrom(src => src.ProductImages.Select(pi => pi.ImageURL.ToList())))
-               .ReverseMap();
+               .ReverseMap(); 
+
+
+            CreateMap<BasketItemDto, BasketItem>().ReverseMap();
+            CreateMap<Basket, BasketDto>()
+                .ForMember(baskdto => baskdto.BasketItems,
+                    opt => opt.MapFrom(src => src.BasketItems))
+                .ReverseMap();
+
+
+            CreateMap<OrderItemDto, OrderItem>().ReverseMap();
+            CreateMap<Order, CreateOrderDto>()
+                .ForMember(orderdto => orderdto.orderItemDtos,
+                    opt => opt.MapFrom(src => src.OrderItems))
+                .ReverseMap();
+
+
+            CreateMap<Order, ReturnOrderDto>()
+                .ReverseMap();
+
+
 
 
         }
