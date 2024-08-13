@@ -1,13 +1,15 @@
 ﻿using AutoMapper;
+using ECommerceApp.API;
+using ECommerceApp.Business.Base;
 using ECommerceApp.Business.DTOs.Product;
 using ECommerceApp.Business.Helpers;
 using ECommerceApp.Business.Interfaces;
 using ECommerceApp.Data.Entities;
 using ECommerceApp.Data.Interfaces;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
+using System.Linq.Expressions;
 
-public class ProductService : IProductService
+public class ProductService : ResponseHandler, IProductService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
@@ -18,10 +20,11 @@ public class ProductService : IProductService
         _mapper = mapper;
         _unitOfWork = unitOfWork;
         _webHost = webHost;
-        _imagePath = _webHost.WebRootPath + FileSetings.ImagesPath;
+        _imagePath = _webHost.WebRootPath + FileSetings.ProductsImagesPath;
     }
 
-    public async Task<IEnumerable<ProductReturnDto>> GetAllAsync()
+    // Check this
+    public async Task<Response<IEnumerable<ProductReturnDto>>> GetAllAsync()
     {
         var products = await _unitOfWork.Products
             .GetAllAsync(p => p.Category, p => p.Brand, p => p.ProductImages);
@@ -38,15 +41,55 @@ public class ProductService : IProductService
             }
         }
 
-        return productDtos;
+        return Success(productDtos);
     }
-    public async Task<ProductReturnDto> GetByIdAsync(int id)
+
+    public async Task<PagedList<ProductReturnDto>> GetAllAsyncWithPaginted
+        (string search, string? sortColumn, string? sortOrder, int page = 1, int pageNumber = 1, int pageSize = 10)
+    {
+        var products = _unitOfWork.Products.GetAllWithPaginted();
+
+        #region Fillter
+        if (!string.IsNullOrEmpty(search))
+        {
+            products = products.Where(x => x.Name.Contains(search) || x.Description.Contains(search));
+        }
+        #endregion
+
+        #region Sorting
+
+        Expression<Func<Product, object>> keySelector = sortColumn.ToLower() switch
+        {
+            "Name" => products => products.Name,
+            "Price" => products => products.Price,
+            "Description" => products => products.Description,
+            _ => products => products.Id
+        };
+
+        if (sortOrder.ToLower() == "desc")
+            products = products.OrderByDescending(keySelector);
+        else
+            products = products.OrderBy(keySelector);
+        #endregion
+
+        #region Paginated
+
+        var productReturnDto = products
+            .Select(x => new ProductReturnDto { Id = x.Id, Name = x.Name, Price = x.Price });
+
+        var pagedList = await PagedList<ProductReturnDto>
+            .CreateAsync(productReturnDto, page, pageSize);
+        #endregion
+
+        return pagedList;
+    }
+    public async Task<Response<ProductReturnDto>> GetByIdAsync(int id)
     {
         var product = await _unitOfWork.Products
             .GetByIdAsync(id, p => p.Category, p => p.Brand, p => p.ProductImages);
 
         if (product == null)
-            return null;
+            return NotFound<ProductReturnDto>("Object not found");
 
         var productDto = _mapper.Map<ProductReturnDto>(product);
 
@@ -56,7 +99,7 @@ public class ProductService : IProductService
             productDto.ImageUrls = imageUrls;
         }
 
-        return productDto;
+        return Success(productDto);
     }
     public async Task<ProductReturnDto?> CreateAsync(ProductCreateDto productCreateDto)
     {
@@ -72,7 +115,7 @@ public class ProductService : IProductService
                 // Tuple
                 var result = await Utilities.SaveFileAsync(image, _imagePath);
 
-                if (result.isSuccess)
+                if (result.Succeeded)
                 {
                     var productImage = new ProductImage
                     {
@@ -125,8 +168,6 @@ public class ProductService : IProductService
 
         return rowAffected > 0 ? true : false;
     }
-
-  
 }
 
 

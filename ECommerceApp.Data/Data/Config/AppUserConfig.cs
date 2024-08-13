@@ -10,8 +10,8 @@ namespace ECommerceApp.Data.Data.Config
         {
             builder.HasKey(x => x.Id);
 
-            builder.Property(x => x.ImageUrl)
-                .IsRequired(false);
+            //builder.Property(x => x.ImageUrl)
+            //    .IsRequired(false);
 
             builder.HasMany(x => x.Addresses)
                 .WithOne(x => x.User)
@@ -28,7 +28,7 @@ namespace ECommerceApp.Data.Data.Config
                 .HasForeignKey<Payment>(p => p.UserId);
 
 
-           
+
 
 
 

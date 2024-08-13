@@ -1,4 +1,7 @@
-﻿namespace ECommerceApp.Business.DTOs.User
+﻿using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace ECommerceApp.Business.DTOs.User
 {
     public class RegisterDto
     {
@@ -7,6 +10,7 @@
         public string Email { get; set; }
         public byte Age { get; set; }
         public bool Gender { get; set; }
-        public string? ImageUrl { get; set; }
+        public string ClintUrl { get; set; }
+        public IFormFile? PorfileImageUrl { get; set; }
     }
 }
