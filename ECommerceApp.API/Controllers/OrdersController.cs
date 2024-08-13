@@ -58,18 +58,18 @@ namespace ECommerceApp.API.Controllers
 
         }
 
-        [HttpPut("Update")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Update(UpdateOrderDto updateOrderDto)
-        {
-            var result = await _orderService.UpdateAsync(updateOrderDto);
+        //[HttpPut("Update")]
+        //[ProducesResponseType(StatusCodes.Status204NoContent)]
+        //[ProducesResponseType(StatusCodes.Status404NotFound)]
+        //public async Task<IActionResult> Update(UpdateOrderDto updateOrderDto)
+        //{
+        //    var result = await _orderService.UpdateAsync(updateOrderDto);
 
-            if(!result)
-                return NotFound();
+        //    if(!result)
+        //        return NotFound();
 
-            return NoContent();
-        }
+        //    return NoContent();
+        //}
 
         [HttpDelete("Id")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]

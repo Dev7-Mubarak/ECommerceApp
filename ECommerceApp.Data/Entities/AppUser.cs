@@ -1,10 +1,13 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 
 namespace ECommerceApp.Data.Entities
 {
     public class AppUser : IdentityUser
     {
+        [Required]
         public byte Age { get; set; }
+        [Required]
         public bool Gender { get; set; }
         public string? ImageUrl { get; set; }
 

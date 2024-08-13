@@ -62,18 +62,18 @@ public class OrderService : IOrderService
 
         return null;
     }
-    public async Task<Order> UpdateAsync(CreateOrderDto orderDto)
-    {
+    //public async Task<Order> UpdateAsync(CreateOrderDto orderDto)
+    //{
        
-        var order = _mapper.Map<Order>(orderDto);
-         _unitOfWork.Orders.Update(order);
-        await _unitOfWork.CompleteAsync();
-        return order;
-    }
-    public Task<bool> UpdateAsync(UpdateOrderDto updateOrderDto)
-    {
-        throw new NotImplementedException();
-    }
+    //    var order = _mapper.Map<Order>(orderDto);
+    //     _unitOfWork.Orders.Update(order);
+    //    await _unitOfWork.CompleteAsync();
+    //    return order;
+    //}
+    //public Task<bool> UpdateAsync(UpdateOrderDto updateOrderDto)
+    //{
+    //    throw new NotImplementedException();
+    //}
     public async Task<bool> DeleteAsync(int id)
     {
         var order = await _unitOfWork.Orders.GetByIdAsync(id);

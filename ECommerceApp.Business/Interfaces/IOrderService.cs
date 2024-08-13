@@ -8,7 +8,7 @@ namespace ECommerceApp.Business.Interfaces
         Task<IEnumerable<ReturnOrderDto>> GetAllAsync();
         Task<ReturnOrderDto> GetByIdAsync(int id);
         Task<CreateOrderDto> CreateAsync(CreateOrderDto productDto);
-        Task<bool> UpdateAsync(UpdateOrderDto updateOrderDto);
+       // Task<bool> UpdateAsync(UpdateOrderDto updateOrderDto);
         Task<bool> DeleteAsync(int id);
     }
 }
