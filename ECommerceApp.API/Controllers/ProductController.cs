@@ -38,10 +38,10 @@ namespace ECommerceApp.API.Controllers
         public async Task<IActionResult> GetById(int id)
         {
             var product = await _productService.GetByIdAsync(id);
-            if (product == null)
-            {
-                return NotFound();
-            }
+            //if (product == null)
+            //{
+            //    return NotFound();
+            //}
             return Ok(product);
         }
 
@@ -88,10 +88,12 @@ namespace ECommerceApp.API.Controllers
         public async Task<IActionResult> Delete(int id)
         {
            var product =  await _productService.DeleteAsync(id);
-            if(product == true)
-                return Ok(id);
-           else
-                return BadRequest();
+           // if(product == true)
+           //     return Ok(id);
+           //else
+           //     return BadRequest();
+
+            return Ok(product);
         }
 
 

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ECommerceApp.Bases;
 using ECommerceApp.Business.DTOs.Product;
 using ECommerceApp.Business.Helpers;
 using ECommerceApp.Business.Interfaces;
@@ -7,12 +8,16 @@ using ECommerceApp.Data.Interfaces;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 
-public class ProductService : IProductService
+public class ProductService : ResponseHandler ,IProductService 
 {
+    #region Fields
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
     private readonly IWebHostEnvironment _webHost;
     private readonly string _imagePath;
+    #endregion
+    #region Constrcutor(s)
+
     public ProductService(IMapper mapper, IUnitOfWork unitOfWork, IWebHostEnvironment webHost)
     {
         _mapper = mapper;
@@ -20,14 +25,15 @@ public class ProductService : IProductService
         _webHost = webHost;
         _imagePath = _webHost.WebRootPath + FileSetings.ImagesPath;
     }
+    #endregion
 
-    public async Task<IEnumerable<ProductReturnDto>> GetAllAsync()
+    public async Task<Response<IEnumerable<ProductReturnDto>>> GetAllAsync()
     {
         var products = await _unitOfWork.Products
             .GetAllAsync(p => p.Category, p => p.Brand, p => p.ProductImages);
+        if (products == null) return NotFound<IEnumerable<ProductReturnDto>>("");
 
         var productDtos = _mapper.Map<IEnumerable<ProductReturnDto>>(products);
-
         foreach (var productDto in productDtos)
         {
             var product = products.FirstOrDefault(p => p.Id == productDto.Id);
@@ -38,15 +44,15 @@ public class ProductService : IProductService
             }
         }
 
-        return productDtos;
+        return Success<IEnumerable<ProductReturnDto>>(productDtos);
     }
-    public async Task<ProductReturnDto> GetByIdAsync(int id)
+    public async Task<Response<ProductReturnDto>> GetByIdAsync(int id)
     {
         var product = await _unitOfWork.Products
             .GetByIdAsync(id, p => p.Category, p => p.Brand, p => p.ProductImages);
 
         if (product == null)
-            return null;
+            return  NotFound<ProductReturnDto>();
 
         var productDto = _mapper.Map<ProductReturnDto>(product);
 
@@ -56,9 +62,9 @@ public class ProductService : IProductService
             productDto.ImageUrls = imageUrls;
         }
 
-        return productDto;
+        return Success<ProductReturnDto>(productDto);
     }
-    public async Task<ProductReturnDto?> CreateAsync(ProductCreateDto productCreateDto)
+    public async Task<Response<ProductCreateDto>> CreateAsync(ProductCreateDto productCreateDto)
     {
 
         var product = _mapper.Map<Product>(productCreateDto);
@@ -85,12 +91,13 @@ public class ProductService : IProductService
 
             }
 
+           
         }
 
         await _unitOfWork.Products.CreateAsync(product);
         int rowAffected = await _unitOfWork.CompleteAsync();
-
-        return rowAffected > 0 ? _mapper.Map<ProductReturnDto>(product) : null;
+        return rowAffected > 0 ? Success<ProductCreateDto>(productCreateDto) : null;
+      //  return rowAffected > 0 ? _mapper.Map<Response<ProductReturnDto>>(product) : null;
     }
     public async Task<bool> UpdateAsync(ProductUpdateDto productDto)
     {
@@ -103,15 +110,12 @@ public class ProductService : IProductService
 
         return true;
     }
-    public async Task<bool> DeleteAsync(int productId)
+    public async Task<Response<bool>> DeleteAsync(int productId)
     {
         var product = await _unitOfWork.Products.GetByIdAsync(productId, p => p.ProductImages);
 
-        if (product == null)
-        {
-            return false;
-        }
-
+        if (product == null) return NotFound<bool>();
+       
         if (product.ProductImages != null)
         {
             foreach (var image in product.ProductImages)
@@ -119,11 +123,11 @@ public class ProductService : IProductService
                 Utilities.DeleteFile(image.ImageURL, _imagePath);
             }
         }
-
         _unitOfWork.Products.Delete(product);
-        var rowAffected = await _unitOfWork.CompleteAsync();
+        await _unitOfWork.CompleteAsync();
+        return Deleted<bool>();
 
-        return rowAffected > 0 ? true : false;
+        // return rowAffected > 0 ? true : false;
     }
 
   
