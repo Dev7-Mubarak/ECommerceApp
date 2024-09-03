@@ -93,7 +93,7 @@ public class ProductService : ResponseHandler, IProductService
             .GetByIdAsync(id, p => p.Category, p => p.Brand, p => p.ProductImages);
 
         if (product == null)
-            return NotFound<ProductReturnDto>("Object not found");
+            return NotFound<ProductReturnDto>();
 
         var productDto = _mapper.Map<ProductReturnDto>(product);
 
@@ -103,7 +103,7 @@ public class ProductService : ResponseHandler, IProductService
             productDto.ImageUrls = imageUrls;
         }
 
-        return Success<ProductReturnDto>(productDto);
+        return Success(productDto);
     }
     public async Task<Response<ProductCreateDto>> CreateAsync(ProductCreateDto productCreateDto)
     {

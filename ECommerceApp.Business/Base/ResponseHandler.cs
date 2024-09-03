@@ -49,7 +49,7 @@ namespace ECommerceApp.Business.Base
             {
                 StatusCode = HttpStatusCode.NotFound,
                 Succeeded = false,
-                Message = message == null ? "Not Found" : message
+                Message = message == null ? $"Not {nameof(T)} Found" : message
             };
         }
 

@@ -49,5 +49,18 @@
             public const string Delete = Prefix + "{Id}";
         }
 
+        public static class UserRouting
+        {
+            public const string Prefix = Rule + "User/";
+            public const string List = Prefix + "List";
+            public const string Paginted = Prefix + "Paginted";
+            public const string GetById = Prefix + "{Id}";
+            public const string GetByUserName = Prefix + "{UserName}";
+            public const string GetUserRoles = Prefix + "Id";
+            public const string Create = Prefix + "Create";
+            public const string Update = Prefix + "Update";
+            public const string Delete = Prefix + "{Id}";
+        }
+
     }
 }
