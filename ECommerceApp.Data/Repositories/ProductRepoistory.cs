@@ -13,9 +13,5 @@ namespace ECommerceApp.Data.Repositories
         {
         }
 
-
-
-
-
     }
 }
