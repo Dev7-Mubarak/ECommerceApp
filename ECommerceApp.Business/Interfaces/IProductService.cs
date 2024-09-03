@@ -12,7 +12,7 @@ namespace ECommerceApp.Business.Interfaces
         Task<Response<ProductReturnDto>> GetByIdAsync(int id);
         Task<ProductReturnDto> CreateAsync(ProductCreateDto productDto);
         Task<bool> UpdateAsync(ProductUpdateDto productDto);
-        Task<bool> DeleteAsync(int id);
+        Task<Response<bool>> DeleteAsync(int id);
     }
 }
 

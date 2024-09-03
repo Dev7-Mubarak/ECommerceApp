@@ -12,10 +12,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
-
+var sourses = builder.Configuration.Sources;
 
 builder.Services.AddTransient<IFileService, FileService>();
-
 builder.Services.AddScoped<IBasketService, BasketService>();
 
 
@@ -39,7 +38,6 @@ builder.Services.IdentityServices(jwtOptions);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
 
 var app = builder.Build();
 

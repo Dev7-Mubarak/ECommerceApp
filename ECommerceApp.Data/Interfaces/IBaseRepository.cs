@@ -13,5 +13,3 @@ namespace ECommerceApp.Data.Interfaces
 
     }
 }
-
-

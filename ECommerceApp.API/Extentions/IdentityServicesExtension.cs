@@ -3,8 +3,6 @@ using ECommerceApp.Business.Interfaces;
 using ECommerceApp.Business.Services;
 using ECommerceApp.Data.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-
-//using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -19,7 +17,6 @@ namespace ECommerceApp.API.Extentions
 
             Services.AddIdentity<AppUser, IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>();
-
 
             Services.AddAuthentication(options =>
             {

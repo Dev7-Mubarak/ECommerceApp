@@ -78,7 +78,7 @@ namespace ECommerceApp.API.Controllers
             {
                 var product = await _productService.UpdateAsync(updateDto);
 
-                if (product != null)
+                if (!product)
                 {
                     await _productService.UpdateAsync(updateDto);
                     return Ok(updateDto.Name + "/" + updateDto.BrandName);
@@ -96,10 +96,7 @@ namespace ECommerceApp.API.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var product = await _productService.DeleteAsync(id);
-            if (product == true)
-                return Ok(id);
-            else
-                return BadRequest();
+            return Ok(product);
         }
 
 
