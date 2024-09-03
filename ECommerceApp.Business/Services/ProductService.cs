@@ -1,14 +1,15 @@
 ﻿using AutoMapper;
-using ECommerceApp.Bases;
+using ECommerceApp.API;
+using ECommerceApp.Business.Base;
 using ECommerceApp.Business.DTOs.Product;
 using ECommerceApp.Business.Helpers;
 using ECommerceApp.Business.Interfaces;
 using ECommerceApp.Data.Entities;
 using ECommerceApp.Data.Interfaces;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
+using System.Linq.Expressions;
 
-public class ProductService : ResponseHandler ,IProductService 
+public class ProductService : ResponseHandler, IProductService
 {
     #region Fields
     private readonly IUnitOfWork _unitOfWork;
@@ -23,7 +24,7 @@ public class ProductService : ResponseHandler ,IProductService
         _mapper = mapper;
         _unitOfWork = unitOfWork;
         _webHost = webHost;
-        _imagePath = _webHost.WebRootPath + FileSetings.ImagesPath;
+        _imagePath = _webHost.WebRootPath + FileSetings.ProductsImagesPath;
     }
     #endregion
 
@@ -44,7 +45,47 @@ public class ProductService : ResponseHandler ,IProductService
             }
         }
 
-        return Success<IEnumerable<ProductReturnDto>>(productDtos);
+        return Success(productDtos);
+    }
+
+    public async Task<PagedList<ProductReturnDto>> GetAllAsyncWithPaginted
+        (string search, string? sortColumn, string? sortOrder, int page = 1, int pageNumber = 1, int pageSize = 10)
+    {
+        var products = _unitOfWork.Products.GetAllWithPaginted();
+
+        #region Fillter
+        if (!string.IsNullOrEmpty(search))
+        {
+            products = products.Where(x => x.Name.Contains(search) || x.Description.Contains(search));
+        }
+        #endregion
+
+        #region Sorting
+
+        Expression<Func<Product, object>> keySelector = sortColumn.ToLower() switch
+        {
+            "Name" => products => products.Name,
+            "Price" => products => products.Price,
+            "Description" => products => products.Description,
+            _ => products => products.Id
+        };
+
+        if (sortOrder.ToLower() == "desc")
+            products = products.OrderByDescending(keySelector);
+        else
+            products = products.OrderBy(keySelector);
+        #endregion
+
+        #region Paginated
+
+        var productReturnDto = products
+            .Select(x => new ProductReturnDto { Id = x.Id, Name = x.Name, Price = x.Price });
+
+        var pagedList = await PagedList<ProductReturnDto>
+            .CreateAsync(productReturnDto, page, pageSize);
+        #endregion
+
+        return pagedList;
     }
     public async Task<Response<ProductReturnDto>> GetByIdAsync(int id)
     {
@@ -52,7 +93,7 @@ public class ProductService : ResponseHandler ,IProductService
             .GetByIdAsync(id, p => p.Category, p => p.Brand, p => p.ProductImages);
 
         if (product == null)
-            return  NotFound<ProductReturnDto>();
+            return NotFound<ProductReturnDto>();
 
         var productDto = _mapper.Map<ProductReturnDto>(product);
 
@@ -62,7 +103,7 @@ public class ProductService : ResponseHandler ,IProductService
             productDto.ImageUrls = imageUrls;
         }
 
-        return Success<ProductReturnDto>(productDto);
+        return Success(productDto);
     }
     public async Task<Response<ProductCreateDto>> CreateAsync(ProductCreateDto productCreateDto)
     {
@@ -78,7 +119,7 @@ public class ProductService : ResponseHandler ,IProductService
                 // Tuple
                 var result = await Utilities.SaveFileAsync(image, _imagePath);
 
-                if (result.isSuccess)
+                if (result.Succeeded)
                 {
                     var productImage = new ProductImage
                     {
@@ -91,13 +132,13 @@ public class ProductService : ResponseHandler ,IProductService
 
             }
 
-           
+
         }
 
         await _unitOfWork.Products.CreateAsync(product);
         int rowAffected = await _unitOfWork.CompleteAsync();
         return rowAffected > 0 ? Success<ProductCreateDto>(productCreateDto) : null;
-      //  return rowAffected > 0 ? _mapper.Map<Response<ProductReturnDto>>(product) : null;
+        //  return rowAffected > 0 ? _mapper.Map<Response<ProductReturnDto>>(product) : null;
     }
     public async Task<bool> UpdateAsync(ProductUpdateDto productDto)
     {
@@ -115,7 +156,7 @@ public class ProductService : ResponseHandler ,IProductService
         var product = await _unitOfWork.Products.GetByIdAsync(productId, p => p.ProductImages);
 
         if (product == null) return NotFound<bool>();
-       
+
         if (product.ProductImages != null)
         {
             foreach (var image in product.ProductImages)
@@ -130,7 +171,10 @@ public class ProductService : ResponseHandler ,IProductService
         // return rowAffected > 0 ? true : false;
     }
 
-  
+    Task<ProductReturnDto> IProductService.CreateAsync(ProductCreateDto productDto)
+    {
+        throw new NotImplementedException();
+    }
 }
 
 

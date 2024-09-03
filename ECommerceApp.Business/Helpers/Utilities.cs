@@ -25,7 +25,7 @@ namespace ECommerceApp.Business.Helpers
             return Guid.NewGuid() + extension;
         }
         // return Tuple
-        public static async Task<(bool isSuccess, string FileName)> SaveFileAsync(IFormFile file, string destination)
+        public static async Task<(bool Succeeded, string FileName)> SaveFileAsync(IFormFile file, string destination)
         {
 
             CreateFolderIfDoesNotExist(destination);

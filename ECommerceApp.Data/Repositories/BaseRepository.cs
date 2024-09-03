@@ -1,7 +1,5 @@
 ﻿using ECommerceApp.Data.Entities;
 using ECommerceApp.Data.Interfaces;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -14,10 +12,24 @@ namespace ECommerceApp.Data.Repositories
         public BaseRepository(ApplicationDbContext context)
         {
             _context = context;
-           
+
+        }
+        public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, object>>[] includes = null)
+        {
+            IQueryable<T> query = _context.Set<T>();
+
+            if (includes != null)
+                query = includes.Aggregate(query, (current, include) => current.Include(include));
+
+            return await query.ToListAsync();
         }
 
-        public async Task<T> CreateAsync(T entity) 
+        public IQueryable<T> GetAllWithPaginted()
+        {
+            return _context.Set<T>().AsNoTracking();
+        }
+
+        public async Task<T> CreateAsync(T entity)
         {
 
             await _context.AddAsync(entity);
@@ -33,15 +45,6 @@ namespace ECommerceApp.Data.Repositories
             return await query.FirstOrDefaultAsync(x => x.Id == id);
         }
         public void Delete(T entity) => _context.Remove(entity);
-        public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, object>>[] includes = null)
-        {
-            IQueryable<T> query = _context.Set<T>();
-
-            if (includes != null)
-                query = includes.Aggregate(query, (current, include) => current.Include(include));
-
-            return await query.ToListAsync();
-        }
         public T Update(T entity)
         {
             _context.Update(entity);
@@ -53,7 +56,6 @@ namespace ECommerceApp.Data.Repositories
 
             return product;
         }
-
     }
 }
 

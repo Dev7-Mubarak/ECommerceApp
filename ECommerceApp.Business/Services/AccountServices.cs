@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ECommerceApp.Business.Services
 {
-    public class AccountServices : IAccountServices
+    public class AccountServices : IAccountService
     {
     }
 }

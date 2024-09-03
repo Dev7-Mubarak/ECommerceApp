@@ -44,7 +44,7 @@ namespace ECommerceApp.Business.Helpers
                opt => opt.MapFrom(src => src.Category.Name))
                .ForMember(prdto => prdto.Images,
                opt => opt.MapFrom(src => src.ProductImages.Select(pi => pi.ImageURL.ToList())))
-               .ReverseMap(); 
+               .ReverseMap();
 
 
             CreateMap<BasketItemDto, BasketItem>().ReverseMap();
@@ -64,8 +64,8 @@ namespace ECommerceApp.Business.Helpers
             CreateMap<Order, ReturnOrderDto>()
                 .ReverseMap();
 
-
-
+            //CreateMap<AppUser, ReturnUserDto>()
+            //    .ForMember(x => x.PorfileImageUrl)
 
         }
     }
